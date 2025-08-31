@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User, UserRole } from '../users/entities/user.entity';
+import { User } from '../users/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -14,10 +14,14 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, password: string): Promise<any> {
-    const user = await this.usersRepository.findOne({ where: { email } });
-    if (user && (await bcrypt.compare(password, user.password))) {
-      const { password, ...result } = user;
-      return result;
+    try {
+      const user = await this.usersRepository.findOne({ where: { email } });
+      if (user && await bcrypt.compare(password, user.password)) {
+        const { password, ...result } = user;
+        return result;
+      }
+    } catch (error) {
+      console.error('Auth validation error:', error);
     }
     return null;
   }
@@ -34,21 +38,23 @@ export class AuthService {
     };
   }
 
-  async register(
-    email: string,
-    password: string,
-    role: string,
-    companyName?: string,
-  ) {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = this.usersRepository.create({
-      email,
-      password: hashedPassword,
-      role: role as UserRole,
-      companyName,
-    });
-    await this.usersRepository.save(user);
-    const { password: _, ...result } = user;
-    return result;
+  async register(email: string, password: string, role: string, companyName?: string) {
+    try {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const user = this.usersRepository.create({
+        email,
+        password: hashedPassword,
+        role,
+        companyName,
+      });
+      await this.usersRepository.save(user);
+      const { password: _, ...result } = user;
+      return result;
+    } catch (error) {
+      if (error.code === 'ER_DUP_ENTRY') {
+        throw new Error('User already exists');
+      }
+      throw error;
+    }
   }
 }

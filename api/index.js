@@ -1,48 +1,32 @@
-require('dotenv').config();
+const { createServer } = require('http');
+const { parse } = require('url');
 const { NestFactory } = require('@nestjs/core');
-const { AppModule } = require('../dist/app.module').AppModule;
-const { ValidationPipe } = require('@nestjs/common');
-const { SwaggerModule, DocumentBuilder } = require('@nestjs/swagger');
+const { ExpressAdapter } = require('@nestjs/platform-express');
+const express = require('express');
 
-let app;
+// Import compiled app module
+const { AppModule } = require('../dist/app.module');
 
-async function createApp() {
-  const app = await NestFactory.create(AppModule, { 
-    cors: true,
-    logger: ['error', 'warn']
-  });
-  
-  app.useGlobalPipes(new ValidationPipe({
-    whitelist: true,
-    forbidNonWhitelisted: true,
-    transform: true,
-  }));
+let cachedServer;
 
-  app.setGlobalPrefix('api');
-  
-  // Swagger setup
-  const config = new DocumentBuilder()
-    .setTitle('Expanders360 API')
-    .setDescription('Global Expansion Management API')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document);
-  
-  await app.init();
-  return app;
+async function bootstrapServer() {
+  if (!cachedServer) {
+    const expressApp = express();
+    const adapter = new ExpressAdapter(expressApp);
+    
+    const app = await NestFactory.create(AppModule, adapter, {
+      logger: ['error', 'warn'],
+    });
+    
+    app.enableCors();
+    await app.init();
+    
+    cachedServer = createServer(expressApp);
+  }
+  return cachedServer;
 }
 
 module.exports = async (req, res) => {
-  try {
-    if (!app) {
-      app = await createApp();
-    }
-    const server = app.getHttpAdapter().getInstance();
-    server(req, res);
-  } catch (error) {
-    console.error('Error in API handler:', error);
-    res.status(500).json({ error: 'Internal server error', message: error.message });
-  }
+  const server = await bootstrapServer();
+  server.emit('request', req, res);
 };
