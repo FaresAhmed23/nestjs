@@ -65,7 +65,7 @@ async function bootstrap() {
     
   const document = SwaggerModule.createDocument(app, config);
   
-  // Custom Swagger options for better UI
+  // Custom Swagger options with CDN assets
   SwaggerModule.setup('api', app, document, {
     customSiteTitle: 'Expanders360 API Documentation',
     customfavIcon: 'https://nestjs.com/img/logo_text.svg',
@@ -74,6 +74,11 @@ async function bootstrap() {
       .swagger-ui .info { margin-bottom: 50px }
       .swagger-ui .scheme-container { background: #f5f5f5; padding: 15px; border-radius: 5px; margin-bottom: 20px }
     `,
+    customCssUrl: 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css',
+    customJs: [
+      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.min.js',
+      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.min.js',
+    ],
     swaggerOptions: {
       persistAuthorization: true,
       docExpansion: 'list',
