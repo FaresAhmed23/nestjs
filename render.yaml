@@ -1,0 +1,69 @@
+services:
+  - type: web
+    name: expanders360-api
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm run start:prod
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRATION
+        value: 7d
+      - key: MONGODB_URI
+        sync: false
+      - key: SMTP_HOST
+        value: smtp-relay.brevo.com
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: SMTP_FROM
+        sync: false
+      - key: MYSQL_HOST
+        fromDatabase:
+          name: expanders360-mysql
+          property: host
+      - key: MYSQL_PORT
+        fromDatabase:
+          name: expanders360-mysql
+          property: port
+      - key: MYSQL_USERNAME
+        fromDatabase:
+          name: expanders360-mysql
+          property: user
+      - key: MYSQL_PASSWORD
+        fromDatabase:
+          name: expanders360-mysql
+          property: password
+      - key: MYSQL_DATABASE
+        fromDatabase:
+          name: expanders360-mysql
+          property: database
+      - key: REDIS_HOST
+        fromService:
+          type: redis
+          name: expanders360-redis
+          property: host
+      - key: REDIS_PORT
+        fromService:
+          type: redis
+          name: expanders360-redis
+          property: port
+
+  - type: redis
+    name: expanders360-redis
+    plan: free
+    maxmemoryPolicy: allkeys-lru
+
+databases:
+  - name: expanders360-mysql
+    plan: free
+    databaseName: expanders360
+    user: expanders360
