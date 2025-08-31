@@ -23,6 +23,7 @@ export class CountryAnalyticsDto {
 }
 
 export class TopVendorsResponseDto {
+  //@ts-ignore
   @ApiProperty({ 
     example: {
       USA: {
