@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Param, Query, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Query,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { DocumentsService } from './documents.service';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { SearchDocumentDto } from './dto/search-document.dto';
@@ -15,6 +24,7 @@ export class DocumentsController {
   @Post()
   @ApiOperation({ summary: 'Upload a new document' })
   create(@Body() createDocumentDto: CreateDocumentDto, @Request() req) {
+    //@ts-ignore
     createDocumentDto.uploadedBy = req.user.userId;
     return this.documentsService.create(createDocumentDto);
   }

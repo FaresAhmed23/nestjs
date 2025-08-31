@@ -6,10 +6,10 @@ import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { UserRole } from '../users/entities/user.entity';
-import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 
-@ApiTags('projects')
-@ApiBearerAuth('JWT-auth') // This must match the name in main.ts
+@ApiTags('Projects')
+@ApiBearerAuth('JWT-auth')
 @Controller('projects')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class ProjectsController {
@@ -17,20 +17,35 @@ export class ProjectsController {
 
   @Post()
   @Roles(UserRole.CLIENT)
-  @ApiOperation({ summary: 'Create a new project' })
+  @ApiOperation({ 
+    summary: 'Create a new project',
+    description: 'Create a new expansion project. Only clients can create projects.'
+  })
+  @ApiResponse({ status: 201, description: 'Project created successfully' })
+  @ApiResponse({ status: 403, description: 'Forbidden - Only clients can create projects' })
   create(@Body() createProjectDto: CreateProjectDto, @Request() req) {
     return this.projectsService.create(createProjectDto, req.user.userId);
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all projects' })
+  @ApiOperation({ 
+    summary: 'Get all projects',
+    description: 'Get all projects. Clients see only their projects, admins see all.'
+  })
+  @ApiResponse({ status: 200, description: 'List of projects' })
   findAll(@Request() req) {
     const clientId = req.user.role === UserRole.CLIENT ? req.user.userId : undefined;
     return this.projectsService.findAll(clientId);
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get project by id' })
+  @ApiOperation({ 
+    summary: 'Get project by ID',
+    description: 'Get detailed information about a specific project'
+  })
+  @ApiParam({ name: 'id', description: 'Project UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiResponse({ status: 200, description: 'Project details' })
+  @ApiResponse({ status: 404, description: 'Project not found' })
   findOne(@Param('id') id: string, @Request() req) {
     const clientId = req.user.role === UserRole.CLIENT ? req.user.userId : undefined;
     return this.projectsService.findOne(id, clientId);
@@ -38,14 +53,26 @@ export class ProjectsController {
 
   @Patch(':id')
   @Roles(UserRole.CLIENT)
-  @ApiOperation({ summary: 'Update project' })
+  @ApiOperation({ 
+    summary: 'Update project',
+    description: 'Update project details. Only the client who owns the project can update it.'
+  })
+  @ApiParam({ name: 'id', description: 'Project UUID' })
+  @ApiResponse({ status: 200, description: 'Project updated successfully' })
+  @ApiResponse({ status: 404, description: 'Project not found' })
   update(@Param('id') id: string, @Body() updateProjectDto: UpdateProjectDto, @Request() req) {
     return this.projectsService.update(id, updateProjectDto, req.user.userId);
   }
 
   @Delete(':id')
   @Roles(UserRole.CLIENT)
-  @ApiOperation({ summary: 'Delete project' })
+  @ApiOperation({ 
+    summary: 'Delete project',
+    description: 'Delete a project. Only the client who owns the project can delete it.'
+  })
+  @ApiParam({ name: 'id', description: 'Project UUID' })
+  @ApiResponse({ status: 200, description: 'Project deleted successfully' })
+  @ApiResponse({ status: 404, description: 'Project not found' })
   remove(@Param('id') id: string, @Request() req) {
     return this.projectsService.remove(id, req.user.userId);
   }
