@@ -1,7 +1,10 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class DocumentResponseDto {
-  @ApiProperty({ example: '507f1f77bcf86cd799439011', description: 'MongoDB ObjectId' })
+  @ApiProperty({
+    example: '507f1f77bcf86cd799439011',
+    description: 'MongoDB ObjectId',
+  })
   _id: string;
 
   @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000' })
@@ -13,7 +16,10 @@ export class DocumentResponseDto {
   @ApiProperty({ example: 'This document outlines the strategy...' })
   content: string;
 
-  @ApiProperty({ example: ['usa', 'market-research', 'strategy'], type: [String] })
+  @ApiProperty({
+    example: ['usa', 'market-research', 'strategy'],
+    type: [String],
+  })
   tags: string[];
 
   @ApiPropertyOptional({ example: 'admin@expanders360.com' })
@@ -21,10 +27,10 @@ export class DocumentResponseDto {
 
   @ApiPropertyOptional({ example: 'https://example.com/document.pdf' })
   fileUrl?: string;
-
-  @ApiPropertyOptional({ 
+  //@ts-ignore
+  @ApiPropertyOptional({
     example: { department: 'Legal', version: '1.0' },
-    type: 'object'
+    type: 'object',
   })
   metadata?: Record<string, any>;
 
