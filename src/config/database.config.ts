@@ -9,9 +9,15 @@ export const getMySQLConfig = (): TypeOrmModuleOptions => ({
   password: process.env.MYSQL_PASSWORD,
   database: process.env.MYSQL_DATABASE,
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-  migrations: [__dirname + '/../database/migrations/*{.ts,.js}'],
-  synchronize: process.env.NODE_ENV !== 'production',
-  logging: process.env.NODE_ENV === 'development',
+  synchronize: false,
+  logging: false,
+  ssl:
+    process.env.DATABASE_SSL === 'true'
+      ? {
+          rejectUnauthorized: false,
+          ca: process.env.MYSQL_CA_CERT,
+        }
+      : undefined,
 });
 
 export const getMongoDBConfig = (): MongooseModuleOptions => ({
