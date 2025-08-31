@@ -80,7 +80,7 @@ export class MatchesService {
 
   async refreshActiveProjectMatches(): Promise<void> {
     const activeProjects = await this.projectsRepository.find({
-      where: { status: 'active' }
+      where: { status: 'active' as any }
     });
 
     for (const project of activeProjects) {

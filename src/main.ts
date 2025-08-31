@@ -9,7 +9,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Security
-  app.use(helmet());
+  app.use(helmet as any);
   app.use(compression());
 
   // CORS
