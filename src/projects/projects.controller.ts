@@ -9,7 +9,7 @@ import { UserRole } from '../users/entities/user.entity';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 
 @ApiTags('projects')
-@ApiBearerAuth()
+@ApiBearerAuth('JWT-auth') // This must match the name in main.ts
 @Controller('projects')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class ProjectsController {

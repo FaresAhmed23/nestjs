@@ -6,7 +6,7 @@ import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 
 @ApiTags('documents')
-@ApiBearerAuth()
+@ApiBearerAuth('JWT-auth')
 @Controller('documents')
 @UseGuards(JwtAuthGuard)
 export class DocumentsController {

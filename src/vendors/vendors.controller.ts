@@ -9,7 +9,7 @@ import { UserRole } from '../users/entities/user.entity';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 
 @ApiTags('vendors')
-@ApiBearerAuth()
+@ApiBearerAuth('JWT-auth')
 @Controller('vendors')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class VendorsController {
