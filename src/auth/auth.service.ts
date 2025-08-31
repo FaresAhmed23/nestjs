@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '../users/entities/user.entity';
+import { User, UserRole } from '../users/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class AuthService {
   async validateUser(email: string, password: string): Promise<any> {
     try {
       const user = await this.usersRepository.findOne({ where: { email } });
-      if (user && await bcrypt.compare(password, user.password)) {
+      if (user && (await bcrypt.compare(password, user.password))) {
         const { password, ...result } = user;
         return result;
       }
@@ -38,13 +38,18 @@ export class AuthService {
     };
   }
 
-  async register(email: string, password: string, role: string, companyName?: string) {
+  async register(
+    email: string,
+    password: string,
+    role: string,
+    companyName?: string,
+  ) {
     try {
       const hashedPassword = await bcrypt.hash(password, 10);
       const user = this.usersRepository.create({
         email,
         password: hashedPassword,
-        role,
+        role: role as UserRole,
         companyName,
       });
       await this.usersRepository.save(user);

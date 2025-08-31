@@ -9,18 +9,11 @@ export const getMySQLConfig = (): TypeOrmModuleOptions => ({
   password: process.env.MYSQL_PASSWORD,
   database: process.env.MYSQL_DATABASE,
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-  migrations: [__dirname + '/../database/migrations/*{.ts,.js}'],
-  synchronize: false,
+  synchronize: false, // IMPORTANT: Keep false in production
   logging: false,
   ssl: process.env.DATABASE_SSL === 'true' ? {
-    rejectUnauthorized: true,
-    // Aiven doesn't require CA cert in connection string
+    rejectUnauthorized: false
   } : undefined,
-  extra: {
-    ssl: process.env.DATABASE_SSL === 'true' ? {
-      rejectUnauthorized: false // Set to false for Aiven
-    } : undefined,
-  }
 });
 
 export const getMongoDBConfig = (): MongooseModuleOptions => ({
