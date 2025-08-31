@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 
 export enum UserRole {
   CLIENT = 'client',
@@ -7,15 +8,18 @@ export enum UserRole {
 
 @Entity('users')
 export class User {
+  @ApiProperty()
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @ApiProperty()
   @Column({ unique: true })
   email: string;
 
   @Column()
   password: string;
 
+  @ApiProperty({ enum: UserRole })
   @Column({
     type: 'enum',
     enum: UserRole,
@@ -23,12 +27,15 @@ export class User {
   })
   role: UserRole;
 
+  @ApiProperty({ required: false })
   @Column({ nullable: true })
   companyName: string;
 
+  @ApiProperty()
   @CreateDateColumn()
   createdAt: Date;
 
+  @ApiProperty()
   @UpdateDateColumn()
   updatedAt: Date;
 }

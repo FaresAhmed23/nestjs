@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, HttpCode, HttpStatus } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
+import { ProjectResponseDto, ProjectWithClientDto } from './dto/project-response.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
@@ -17,13 +18,18 @@ export class ProjectsController {
 
   @Post()
   @Roles(UserRole.CLIENT)
+  @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ 
     summary: 'Create a new project',
     description: 'Create a new expansion project. Only clients can create projects.'
   })
-  @ApiResponse({ status: 201, description: 'Project created successfully' })
+  @ApiResponse({ 
+    status: 201, 
+    description: 'Project created successfully',
+    type: ProjectResponseDto 
+  })
   @ApiResponse({ status: 403, description: 'Forbidden - Only clients can create projects' })
-  create(@Body() createProjectDto: CreateProjectDto, @Request() req) {
+  create(@Body() createProjectDto: CreateProjectDto, @Request() req): Promise<ProjectResponseDto> {
     return this.projectsService.create(createProjectDto, req.user.userId);
   }
 
@@ -32,8 +38,12 @@ export class ProjectsController {
     summary: 'Get all projects',
     description: 'Get all projects. Clients see only their projects, admins see all.'
   })
-  @ApiResponse({ status: 200, description: 'List of projects' })
-  findAll(@Request() req) {
+  @ApiResponse({ 
+    status: 200, 
+    description: 'List of projects',
+    type: [ProjectWithClientDto]
+  })
+  findAll(@Request() req): Promise<ProjectWithClientDto[]> {
     const clientId = req.user.role === UserRole.CLIENT ? req.user.userId : undefined;
     return this.projectsService.findAll(clientId);
   }
@@ -44,9 +54,13 @@ export class ProjectsController {
     description: 'Get detailed information about a specific project'
   })
   @ApiParam({ name: 'id', description: 'Project UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
-  @ApiResponse({ status: 200, description: 'Project details' })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Project details',
+    type: ProjectWithClientDto 
+  })
   @ApiResponse({ status: 404, description: 'Project not found' })
-  findOne(@Param('id') id: string, @Request() req) {
+  findOne(@Param('id') id: string, @Request() req): Promise<ProjectWithClientDto> {
     const clientId = req.user.role === UserRole.CLIENT ? req.user.userId : undefined;
     return this.projectsService.findOne(id, clientId);
   }
@@ -58,22 +72,27 @@ export class ProjectsController {
     description: 'Update project details. Only the client who owns the project can update it.'
   })
   @ApiParam({ name: 'id', description: 'Project UUID' })
-  @ApiResponse({ status: 200, description: 'Project updated successfully' })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Project updated successfully',
+    type: ProjectResponseDto 
+  })
   @ApiResponse({ status: 404, description: 'Project not found' })
-  update(@Param('id') id: string, @Body() updateProjectDto: UpdateProjectDto, @Request() req) {
+  update(@Param('id') id: string, @Body() updateProjectDto: UpdateProjectDto, @Request() req): Promise<ProjectResponseDto> {
     return this.projectsService.update(id, updateProjectDto, req.user.userId);
   }
 
   @Delete(':id')
   @Roles(UserRole.CLIENT)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ 
     summary: 'Delete project',
     description: 'Delete a project. Only the client who owns the project can delete it.'
   })
   @ApiParam({ name: 'id', description: 'Project UUID' })
-  @ApiResponse({ status: 200, description: 'Project deleted successfully' })
+  @ApiResponse({ status: 204, description: 'Project deleted successfully' })
   @ApiResponse({ status: 404, description: 'Project not found' })
-  remove(@Param('id') id: string, @Request() req) {
+  remove(@Param('id') id: string, @Request() req): Promise<void> {
     return this.projectsService.remove(id, req.user.userId);
   }
 }
