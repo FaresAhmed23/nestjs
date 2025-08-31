@@ -7,7 +7,7 @@ import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { UserRole } from '../users/entities/user.entity';
-import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 
 @ApiTags('Vendors')
 @ApiBearerAuth('JWT-auth')
@@ -22,6 +22,20 @@ export class VendorsController {
   @ApiOperation({ 
     summary: 'Create a new vendor',
     description: 'Create a new service vendor (Admin only)'
+  })
+  @ApiBody({ 
+    type: CreateVendorDto,
+    examples: {
+      example1: {
+        value: {
+          name: 'Global Expansion Partners',
+          countriesSupported: ['USA', 'Canada', 'UK'],
+          servicesOffered: ['Legal', 'HR', 'Accounting'],
+          rating: 4.8,
+          responseSlaHours: 24
+        }
+      }
+    }
   })
   @ApiResponse({ 
     status: 201, 
@@ -70,6 +84,31 @@ export class VendorsController {
     description: 'Update vendor information (Admin only)'
   })
   @ApiParam({ name: 'id', description: 'Vendor UUID' })
+  @ApiBody({ 
+    type: UpdateVendorDto,
+    examples: {
+      updateRating: {
+        summary: 'Update rating only',
+        value: {
+          rating: 4.9
+        }
+      },
+      updateServices: {
+        summary: 'Update services',
+        value: {
+          servicesOffered: ['Legal', 'HR', 'Accounting', 'Tax Planning']
+        }
+      },
+      updateMultiple: {
+        summary: 'Update multiple fields',
+        value: {
+          name: 'Global Expansion Partners LLC',
+          countriesSupported: ['USA', 'Canada', 'UK', 'Australia'],
+          rating: 4.95
+        }
+      }
+    }
+  })
   @ApiResponse({ 
     status: 200, 
     description: 'Vendor updated successfully',

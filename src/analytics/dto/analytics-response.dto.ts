@@ -15,28 +15,71 @@ export class VendorAnalyticsDto {
 }
 
 export class CountryAnalyticsDto {
-  @ApiProperty({ type: [VendorAnalyticsDto], description: 'Top 3 vendors for this country' })
+  @ApiProperty({ 
+    type: [VendorAnalyticsDto], 
+    description: 'Top 3 vendors for this country',
+    example: [
+      {
+        vendorId: '123e4567-e89b-12d3-a456-426614174000',
+        vendorName: 'Global Expansion Partners',
+        avgScore: 8.5,
+        matchCount: 15
+      }
+    ]
+  })
   topVendors: VendorAnalyticsDto[];
 
-  @ApiProperty({ example: 42, description: 'Number of research documents for projects in this country' })
+  @ApiProperty({ 
+    example: 42, 
+    description: 'Number of research documents for projects in this country' 
+  })
   documentCount: number;
 }
 
 export class TopVendorsResponseDto {
   //@ts-ignore
-  @ApiProperty({ 
-    example: {
-      USA: {
-        topVendors: [{
-          vendorId: '123e4567-e89b-12d3-a456-426614174000',
-          vendorName: 'Global Expansion Partners',
-          avgScore: 8.5,
-          matchCount: 15
-        }],
-        documentCount: 42
+  @ApiProperty({
+    type: 'object',
+    additionalProperties: {
+      type: 'object',
+      properties: {
+        topVendors: {
+          type: 'array',
+          items: { $ref: '#/components/schemas/VendorAnalyticsDto' }
+        },
+        documentCount: { type: 'number' }
       }
     },
-    description: 'Analytics data grouped by country'
+    example: {
+      'USA': {
+        topVendors: [
+          {
+            vendorId: '123e4567-e89b-12d3-a456-426614174000',
+            vendorName: 'Global Expansion Partners',
+            avgScore: 8.5,
+            matchCount: 15
+          },
+          {
+            vendorId: '234e5678-e89b-12d3-a456-426614174001',
+            vendorName: 'American Business Services',
+            avgScore: 7.9,
+            matchCount: 12
+          }
+        ],
+        documentCount: 42
+      },
+      'Germany': {
+        topVendors: [
+          {
+            vendorId: '345e6789-e89b-12d3-a456-426614174002',
+            vendorName: 'European Expansion GmbH',
+            avgScore: 8.2,
+            matchCount: 18
+          }
+        ],
+        documentCount: 28
+      }
+    }
   })
   [country: string]: CountryAnalyticsDto;
 }

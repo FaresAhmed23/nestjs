@@ -1,31 +1,18 @@
 {
   "version": 2,
-  "builds": [
+  "installCommand": "npm install --production=false",
+  "buildCommand": "npx nest build",
+  "outputDirectory": ".",
+  "rewrites": [
     {
-      "src": "package.json",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api-json",
-      "dest": "/api/swagger-json"
-    },
-    {
-      "src": "/swagger",
-      "dest": "/public/swagger.html"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/api"
+      "source": "/(.*)",
+      "destination": "/api"
     }
   ],
   "functions": {
     "api/index.js": {
-      "maxDuration": 30
-    },
-    "api/swagger-json.js": {
-      "maxDuration": 10
+      "maxDuration": 30,
+      "includeFiles": "dist/**"
     }
   }
 }

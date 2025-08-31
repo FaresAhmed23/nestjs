@@ -12,7 +12,12 @@ export const AppDataSource = new DataSource({
   database: process.env.MYSQL_DATABASE,
   entities: ['src/**/*.entity{.ts,.js}'],
   migrations: ['src/database/migrations/*{.ts,.js}'],
-  ssl: process.env.DATABASE_SSL === 'true' ? {
-    rejectUnauthorized: false
-  } : undefined,
+  ssl:
+    process.env.DATABASE_SSL === 'true'
+      ? {
+          rejectUnauthorized: false,
+        }
+      : false,
+  synchronize: false, // Never use synchronize in production
+  logging: process.env.NODE_ENV === 'development',
 });

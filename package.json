@@ -1,5 +1,5 @@
 {
-  "name": "false",
+  "name": "expanders360-api",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -22,7 +22,7 @@
     "migration:run": "typeorm-ts-node-commonjs migration:run -d src/data-source.ts",
     "migration:revert": "typeorm-ts-node-commonjs migration:revert -d src/data-source.ts",
     "seed:run": "ts-node src/database/seeds/seed.ts",
-    "vercel-build": "npm install && npm run build",
+    "vercel-build": "npm run build && npm run migration:run || true",
     "seed": "ts-node src/database/seeds/initial-seed.ts",
     "migration:create": "typeorm-ts-node-commonjs migration:create"
   },

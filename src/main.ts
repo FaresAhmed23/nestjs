@@ -13,19 +13,22 @@ async function bootstrap() {
   });
 
   // Global validation pipe
-  app.useGlobalPipes(new ValidationPipe({
-    whitelist: true,
-    forbidNonWhitelisted: true,
-    transform: true,
-    transformOptions: {
-      enableImplicitConversion: true,
-    },
-  }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+    }),
+  );
 
   // Swagger configuration
   const config = new DocumentBuilder()
     .setTitle('Expanders360 API')
-    .setDescription(`
+    .setDescription(
+      `
       ## Global Expansion Management API
       
       This API helps founders run expansion projects in new countries by:
@@ -42,7 +45,8 @@ async function bootstrap() {
       ### Default Credentials
       - Admin: admin@expanders360.com / admin123
       - Client: client1@example.com / client123
-    `)
+    `,
+    )
     .setVersion('1.0')
     .addBearerAuth(
       {
@@ -62,9 +66,9 @@ async function bootstrap() {
     .addTag('Documents', 'Research documents (MongoDB)')
     .addTag('Analytics', 'Analytics and reporting')
     .build();
-    
+
   const document = SwaggerModule.createDocument(app, config);
-  
+
   // Custom Swagger options with CDN assets
   SwaggerModule.setup('api', app, document, {
     customSiteTitle: 'Expanders360 API Documentation',
@@ -74,7 +78,8 @@ async function bootstrap() {
       .swagger-ui .info { margin-bottom: 50px }
       .swagger-ui .scheme-container { background: #f5f5f5; padding: 15px; border-radius: 5px; margin-bottom: 20px }
     `,
-    customCssUrl: 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css',
+    customCssUrl:
+      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css',
     customJs: [
       'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.min.js',
       'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.min.js',
@@ -89,11 +94,11 @@ async function bootstrap() {
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
-  
+
   console.log(`
-    Ì∫Ä Application is running on: ${await app.getUrl()}
-    Ì≥ö Swagger documentation: ${await app.getUrl()}/api
-    Ì¥ê Default admin: admin@expanders360.com / admin123
+    ‚úÖ Application is running on: ${await app.getUrl()}
+    üìö Swagger documentation: ${await app.getUrl()}/api
+    üîê Default admin: admin@expanders360.com / admin123
   `);
 }
 bootstrap();
