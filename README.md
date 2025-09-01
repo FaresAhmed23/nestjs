@@ -122,144 +122,141 @@ Thought Process
 Let me continue from where it left off.
 
 # Run tests with coverage
-npm run test:cov
+    npm run test:cov
 
 # Run e2e tests
-npm run test:e2e
+    npm run test:e2e
 
 # Clone the repository
-git clone https://github.com/yourusername/expanders360-api.git
-cd expanders360-api
+    git clone https://github.com/yourusername/expanders360-api.git
+    cd expanders360-api
 
 # Install dependencies
-npm install
+    npm install
 
 # Set up environment variables
-cp .env.example .env
-# Edit .env with your database credentials
+    cp .env.example .env
 
 # Run database migrations
-npm run migration:run
+    npm run migration:run
 
 # Seed initial data (creates default admin user)
-npm run seed:run
+    npm run seed:run
 
 # Start development server
-npm run start:dev
+    npm run start:dev
 
 # Generate a new migration
-npm run migration:generate -- -n YourMigrationName
+    npm run migration:generate -- -n YourMigrationName
 
 # Run pending migrations
-npm run migration:run
+    npm run migration:run
 
 # Revert last migration
-npm run migration:revert
+    npm run migration:revert
+    
 API Examples
 Register a new client
 
-curl -X POST http://localhost:3000/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "client@example.com",
-    "password": "securepassword123",
-    "role": "client",
-    "companyName": "Tech Corp"
-  }'
+    curl -X POST http://localhost:3000/auth/register \
+      -H "Content-Type: application/json" \
+      -d '{
+        "email": "client@example.com",
+        "password": "securepassword123",
+        "role": "client",
+        "companyName": "Tech Corp"
+      }'
 
 Login and get JWT token
 
-curl -X POST http://localhost:3000/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "client@example.com",
-    "password": "securepassword123"
-  }'
+    curl -X POST http://localhost:3000/auth/login \
+      -H "Content-Type: application/json" \
+      -d '{
+        "email": "client@example.com",
+        "password": "securepassword123"
+      }'
 
 Create a new project (with JWT token)
 
+    curl -X POST http://localhost:3000/projects \
+      -H "Content-Type: application/json" \
+      -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+      -d '{
+        "name": "US Market Expansion",
+        "country": "United States",
+        "services": ["Legal", "Accounting", "Marketing"],
+        "timeline": "Q2 2024",
+        "budget": 100000
+      }'
 
-curl -X POST http://localhost:3000/projects \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -d '{
-    "name": "US Market Expansion",
-    "country": "United States",
-    "services": ["Legal", "Accounting", "Marketing"],
-    "timeline": "Q2 2024",
-    "budget": 100000
-  }'
-
-Production Deployment
 Vercel Deployment
 
-
 # Install Vercel CLI
-npm i -g vercel
+    npm i -g vercel
 
 # Deploy to production
-vercel --prod
+    vercel --prod
 
 Required Environment Variables
 
 Set these in your production environment:
 
-# Application
-NODE_ENV=production
-PORT=3000
+    # Application
+    NODE_ENV=production
+    PORT=3000
 
-# JWT
-JWT_SECRET=your-super-secret-jwt-key
-JWT_EXPIRATION=7d
+    # JWT
+    JWT_SECRET=your-super-secret-jwt-key
+    JWT_EXPIRATION=7d
 
-# MySQL Database
-MYSQL_HOST=your-mysql-host
-MYSQL_PORT=3306
-MYSQL_USERNAME=your-username
-MYSQL_PASSWORD=your-password
-MYSQL_DATABASE=your-database
-DATABASE_SSL=true
+    # MySQL Database
+    MYSQL_HOST=your-mysql-host
+    MYSQL_PORT=3306
+    MYSQL_USERNAME=your-username
+    MYSQL_PASSWORD=your-password
+    MYSQL_DATABASE=your-database
+    DATABASE_SSL=true
 
-# MongoDB
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/dbname
+    # MongoDB
+    MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/dbname
 
-# Email (Brevo SMTP)
-SMTP_HOST=smtp-relay.brevo.com
-SMTP_PORT=587
-SMTP_USER=your-smtp-user
-SMTP_PASSWORD=your-smtp-password
-SMTP_FROM=noreply@yourdomain.com
+    # Email (Brevo SMTP)
+    SMTP_HOST=smtp-relay.brevo.com
+    SMTP_PORT=587
+    SMTP_USER=your-smtp-user
+    SMTP_PASSWORD=your-smtp-password
+    SMTP_FROM=noreply@yourdomain.com
 
 Docker Support
 
 # Build and run with Docker Compose
-docker-compose up -d
+    docker-compose up -d
 
 # View logs
-docker-compose logs -f app
+    docker-compose logs -f app
 
 # Stop containers
-docker-compose down
+    docker-compose down
 
 Project Structure
 
-.
-├── src/
-│   ├── auth/              # JWT authentication
-│   ├── users/             # User management
-│   ├── clients/           # Client companies
-│   ├── projects/          # Expansion projects
-│   ├── vendors/           # Service vendors
-│   ├── matches/           # Matching algorithm
-│   ├── documents/         # MongoDB documents
-│   ├── analytics/         # Analytics & reporting
-│   ├── notifications/     # Email notifications
-│   ├── scheduler/         # Cron jobs
-│   ├── database/          # Migrations & seeds
-│   └── config/            # Configuration
-├── test/                  # Test files
-├── api/                   # Vercel serverless functions
-└── dist/                  # Compiled output
+    .
+    ├── src/
+    │   ├── auth/              # JWT authentication
+    │   ├── users/             # User management
+    │   ├── clients/           # Client companies
+    │   ├── projects/          # Expansion projects
+    │   ├── vendors/           # Service vendors
+    │   ├── matches/           # Matching algorithm
+    │   ├── documents/         # MongoDB documents
+    │   ├── analytics/         # Analytics & reporting
+    │   ├── notifications/     # Email notifications
+    │   ├── scheduler/         # Cron jobs
+    │   ├── database/          # Migrations & seeds
+    │   └── config/            # Configuration
+    ├── test/                  # Test files
+    ├── api/                   # Vercel serverless functions
+    └── dist/                  # Compiled output
 
 Default Users
 
@@ -301,7 +298,7 @@ Contributing
 
 License
 
-This project is licensed under the UNLICENSED License - see the LICENSE file for details.
-Support
+    This project is licensed under the UNLICENSED License - see the LICENSE file for details.
+    Support
 
 For support, email support@expanders360.com or open an issue in the GitHub repository.
