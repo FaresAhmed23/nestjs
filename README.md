@@ -119,8 +119,6 @@ Thought Process
     License
     Troubleshooting
 
-Let me continue from where it left off.
-
 # Run tests with coverage
     npm run test:cov
 
