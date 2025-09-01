@@ -1,6 +1,11 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
-import { ApiTags, ApiOperation, ApiResponse, ApiProperty } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiProperty,
+} from '@nestjs/swagger';
 
 class HealthCheckDto {
   @ApiProperty({ example: 'ok' })
@@ -12,9 +17,9 @@ class HealthCheckDto {
   @ApiProperty({ example: 'production' })
   environment: string;
 
-  @ApiProperty({ 
+  @ApiProperty({
     example: { mysql: true, mongodb: true },
-    description: 'Service availability status'
+    description: 'Service availability status',
   })
   services: {
     mysql: boolean;
@@ -42,20 +47,34 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  @ApiOperation({ summary: 'API root', description: 'Returns basic API information' })
-  @ApiResponse({ status: 200, description: 'API information', type: ApiInfoDto })
+  @ApiOperation({
+    summary: 'API root',
+    description: 'Returns basic API information',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'API information',
+    type: ApiInfoDto,
+  })
   getHello(): ApiInfoDto {
     return {
       name: 'Expanders360 API',
       version: '1.0.0',
       description: 'Global Expansion Management API',
-      documentation: '/api'
+      documentation: '/api',
     };
   }
 
   @Get('health')
-  @ApiOperation({ summary: 'Health check', description: 'Check if the API and its dependencies are healthy' })
-  @ApiResponse({ status: 200, description: 'Health status', type: HealthCheckDto })
+  @ApiOperation({
+    summary: 'Health check',
+    description: 'Check if the API and its dependencies are healthy',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Health status',
+    type: HealthCheckDto,
+  })
   health(): HealthCheckDto {
     return {
       status: 'ok',
@@ -64,7 +83,7 @@ export class AppController {
       services: {
         mysql: !!process.env.MYSQL_HOST,
         mongodb: !!process.env.MONGODB_URI,
-      }
+      },
     };
   }
 }

@@ -24,7 +24,8 @@
     "seed:run": "ts-node src/database/seeds/seed.ts",
     "vercel-build": "npm run build && npm run migration:run || true",
     "seed": "ts-node src/database/seeds/initial-seed.ts",
-    "migration:create": "typeorm-ts-node-commonjs migration:create"
+    "migration:create": "typeorm-ts-node-commonjs migration:create",
+    "fix:clients": "ts-node src/database/seeds/fix-existing-clients.ts"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.0.2",

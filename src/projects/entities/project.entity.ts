@@ -1,4 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Client } from '../../clients/entities/client.entity';
 import { Match } from '../../matches/entities/match.entity';
 
@@ -16,7 +24,7 @@ export class Project {
   @Column()
   clientId: string;
 
-  @ManyToOne(() => Client, client => client.projects)
+  @ManyToOne(() => Client, (client) => client.projects)
   client: Client;
 
   @Column()
@@ -35,7 +43,7 @@ export class Project {
   })
   status: ProjectStatus;
 
-  @OneToMany(() => Match, match => match.project)
+  @OneToMany(() => Match, (match) => match.project)
   matches: Match[];
 
   @CreateDateColumn()

@@ -1,4 +1,11 @@
-import { IsString, IsArray, IsNumber, IsEnum, ArrayMinSize, Min } from 'class-validator';
+import {
+  IsString,
+  IsArray,
+  IsNumber,
+  IsEnum,
+  ArrayMinSize,
+  Min,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { ProjectStatus } from '../entities/project.entity';
 
@@ -7,26 +14,30 @@ export class CreateProjectDto {
   @IsString()
   country: string;
 
-  @ApiProperty({ 
-    example: ['Legal', 'HR', 'Accounting'], 
+  @ApiProperty({
+    example: ['Legal', 'HR', 'Accounting'],
     description: 'Services needed for the project',
-    type: [String]
+    type: [String],
   })
   @IsArray()
   @ArrayMinSize(1)
   @IsString({ each: true })
   servicesNeeded: string[];
 
-  @ApiProperty({ example: 50000, description: 'Project budget in USD', minimum: 0 })
+  @ApiProperty({
+    example: 50000,
+    description: 'Project budget in USD',
+    minimum: 0,
+  })
   @IsNumber()
   @Min(0)
   budget: number;
 
-  @ApiProperty({ 
-    enum: ProjectStatus, 
-    example: ProjectStatus.ACTIVE, 
+  @ApiProperty({
+    enum: ProjectStatus,
+    example: ProjectStatus.ACTIVE,
     description: 'Project status',
-    default: ProjectStatus.ACTIVE
+    default: ProjectStatus.ACTIVE,
   })
   @IsEnum(ProjectStatus)
   status: ProjectStatus = ProjectStatus.ACTIVE;

@@ -32,8 +32,8 @@ export class ProjectWithClientDto extends ProjectResponseDto {
     example: {
       id: '123e4567-e89b-12d3-a456-426614174000',
       companyName: 'Test Company',
-      contactEmail: 'client@example.com'
-    }
+      contactEmail: 'client@example.com',
+    },
   })
   client: {
     id: string;

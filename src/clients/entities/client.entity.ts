@@ -1,4 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+// src/clients/entities/client.entity.ts
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Project } from '../../projects/entities/project.entity';
 
 @Entity('clients')
@@ -12,7 +20,7 @@ export class Client {
   @Column({ unique: true })
   contactEmail: string;
 
-  @OneToMany(() => Project, project => project.client)
+  @OneToMany(() => Project, (project) => project.client)
   projects: Project[];
 
   @CreateDateColumn()

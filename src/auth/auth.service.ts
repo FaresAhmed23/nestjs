@@ -1,8 +1,10 @@
+// src/auth/auth.service.ts
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User, UserRole } from '../users/entities/user.entity';
+import { Client } from '../clients/entities/client.entity'; // Add this
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -10,6 +12,8 @@ export class AuthService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    @InjectRepository(Client)
+    private clientsRepository: Repository<Client>, // Add this
     private jwtService: JwtService,
   ) {}
 
@@ -53,6 +57,16 @@ export class AuthService {
         companyName,
       });
       await this.usersRepository.save(user);
+
+      // Create a client record if the user is a client
+      if (role === UserRole.CLIENT) {
+        const client = this.clientsRepository.create({
+          companyName: companyName || email,
+          contactEmail: email,
+        });
+        await this.clientsRepository.save(client);
+      }
+
       const { password: _, ...result } = user;
       return result;
     } catch (error) {

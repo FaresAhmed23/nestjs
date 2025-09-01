@@ -9,7 +9,7 @@ export const getMySQLConfig = (): TypeOrmModuleOptions => ({
   password: process.env.MYSQL_PASSWORD,
   database: process.env.MYSQL_DATABASE,
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-  synchronize: false, // IMPORTANT: Keep false in production
+  synchronize: false,
   logging: false,
   ssl: process.env.DATABASE_SSL === 'true' ? {
     rejectUnauthorized: false
