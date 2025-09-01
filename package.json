@@ -28,7 +28,8 @@
     "fix:clients": "ts-node src/database/seeds/fix-existing-clients.ts",
     "seed:vendors": "ts-node src/database/seeds/seed-vendors.ts",
     "seed:documents": "ts-node src/database/seeds/seed-documents.ts",
-    "seed:all": "npm run seed && npm run seed:vendors && npm run seed:documents"
+    "seed:all": "npm run seed && npm run seed:vendors && npm run seed:documents",
+    "generate:test-data": "ts-node src/database/seeds/generate-test-data.ts"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.0.2",

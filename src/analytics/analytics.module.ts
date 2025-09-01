@@ -1,3 +1,4 @@
+// src/analytics/analytics.module.ts
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AnalyticsService } from './analytics.service';
@@ -14,5 +15,6 @@ import { DocumentsModule } from '../documents/documents.module';
   ],
   controllers: [AnalyticsController],
   providers: [AnalyticsService],
+  exports: [AnalyticsService],
 })
 export class AnalyticsModule {}
