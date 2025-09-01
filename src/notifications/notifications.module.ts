@@ -1,10 +1,14 @@
+// src/notifications/notifications.module.ts
 import { Module } from '@nestjs/common';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { NotificationsService } from './notifications.service';
+import { Client } from '../clients/entities/client.entity';
 
 @Module({
   imports: [
+    TypeOrmModule.forFeature([Client]),
     MailerModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (config: ConfigService) => ({

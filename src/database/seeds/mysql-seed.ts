@@ -13,7 +13,6 @@ export async function seedMySQL(dataSource: DataSource) {
   const vendorRepo = dataSource.getRepository(Vendor);
   const projectRepo = dataSource.getRepository(Project);
 
-  // Create admin user
   const adminPassword = await bcrypt.hash('admin123', 10);
   const admin = await userRepo.save({
     email: 'admin@expanders360.com',
@@ -21,7 +20,6 @@ export async function seedMySQL(dataSource: DataSource) {
     role: UserRole.ADMIN,
   });
 
-  // Create client users and clients
   const clients = [];
   for (let i = 1; i <= 3; i++) {
     const clientPassword = await bcrypt.hash(`client${i}123`, 10);
@@ -39,7 +37,6 @@ export async function seedMySQL(dataSource: DataSource) {
     clients.push(client);
   }
 
-  // Create vendors
   const vendorData = [
     {
       name: 'Global Expansion Partners',
@@ -84,7 +81,6 @@ export async function seedMySQL(dataSource: DataSource) {
     vendors.push(vendor);
   }
 
-  // Create projects
   const projectData = [
     {
       client: clients[0],

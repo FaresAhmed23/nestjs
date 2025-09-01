@@ -1,4 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+// src/vendors/entities/vendor.entity.ts
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Match } from '../../matches/entities/match.entity';
 
 @Entity('vendors')
@@ -15,13 +23,13 @@ export class Vendor {
   @Column('simple-array')
   servicesOffered: string[];
 
-  @Column('decimal', { precision: 3, scale: 2 })
+  @Column('decimal', { precision: 2, scale: 1 })
   rating: number;
 
   @Column()
   responseSlaHours: number;
 
-  @OneToMany(() => Match, match => match.vendor)
+  @OneToMany(() => Match, (match) => match.vendor)
   matches: Match[];
 
   @CreateDateColumn()

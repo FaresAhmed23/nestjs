@@ -1,3 +1,4 @@
+// src/vendors/dto/vendor-response.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
 
 export class VendorResponseDto {
@@ -13,7 +14,7 @@ export class VendorResponseDto {
   @ApiProperty({ example: ['Legal', 'HR', 'Accounting'], type: [String] })
   servicesOffered: string[];
 
-  @ApiProperty({ example: 4.8 })
+  @ApiProperty({ example: 4.5 })
   rating: number;
 
   @ApiProperty({ example: 24 })

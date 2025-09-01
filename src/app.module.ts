@@ -1,3 +1,4 @@
+// src/app.module.ts (continued)
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -14,6 +15,7 @@ import { MatchesModule } from './matches/matches.module';
 import { DocumentsModule } from './documents/documents.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { SchedulerModule } from './scheduler/scheduler.module';
 
 @Module({
   imports: [
@@ -31,6 +33,7 @@ import { NotificationsModule } from './notifications/notifications.module';
     DocumentsModule,
     AnalyticsModule,
     NotificationsModule,
+    SchedulerModule,
   ],
   controllers: [AppController],
   providers: [AppService],

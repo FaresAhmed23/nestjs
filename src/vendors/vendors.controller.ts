@@ -1,4 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, HttpCode, HttpStatus } from '@nestjs/common';
+// src/vendors/vendors.controller.ts
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
 import { VendorsService } from './vendors.service';
 import { CreateVendorDto } from './dto/create-vendor.dto';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
@@ -7,70 +19,70 @@ import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { UserRole } from '../users/entities/user.entity';
-import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+} from '@nestjs/swagger';
 
 @ApiTags('Vendors')
 @ApiBearerAuth('JWT-auth')
 @Controller('vendors')
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard)
 export class VendorsController {
   constructor(private readonly vendorsService: VendorsService) {}
 
   @Post()
+  @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN)
   @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Create a new vendor',
-    description: 'Create a new service vendor (Admin only)'
+    description: 'Create a new vendor (Admin only)',
   })
-  @ApiBody({ 
-    type: CreateVendorDto,
-    examples: {
-      example1: {
-        value: {
-          name: 'Global Expansion Partners',
-          countriesSupported: ['USA', 'Canada', 'UK'],
-          servicesOffered: ['Legal', 'HR', 'Accounting'],
-          rating: 4.8,
-          responseSlaHours: 24
-        }
-      }
-    }
-  })
-  @ApiResponse({ 
-    status: 201, 
+  @ApiResponse({
+    status: 201,
     description: 'Vendor created successfully',
-    type: VendorResponseDto
+    type: VendorResponseDto,
   })
-  @ApiResponse({ status: 403, description: 'Forbidden - Admin only' })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden - Admin only',
+  })
   create(@Body() createVendorDto: CreateVendorDto): Promise<VendorResponseDto> {
     return this.vendorsService.create(createVendorDto);
   }
 
   @Get()
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Get all vendors',
-    description: 'Get list of all service vendors'
+    description: 'Get list of all vendors',
   })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiResponse({
+    status: 200,
     description: 'List of vendors',
-    type: [VendorResponseDto]
+    type: [VendorResponseDto],
   })
   findAll(): Promise<VendorResponseDto[]> {
     return this.vendorsService.findAll();
   }
 
   @Get(':id')
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Get vendor by ID',
-    description: 'Get detailed information about a specific vendor'
+    description: 'Get detailed information about a specific vendor',
   })
-  @ApiParam({ name: 'id', description: 'Vendor UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiParam({
+    name: 'id',
+    description: 'Vendor UUID',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  @ApiResponse({
+    status: 200,
     description: 'Vendor details',
-    type: VendorResponseDto
+    type: VendorResponseDto,
   })
   @ApiResponse({ status: 404, description: 'Vendor not found' })
   findOne(@Param('id') id: string): Promise<VendorResponseDto> {
@@ -78,54 +90,34 @@ export class VendorsController {
   }
 
   @Patch(':id')
+  @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN)
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Update vendor',
-    description: 'Update vendor information (Admin only)'
+    description: 'Update vendor details (Admin only)',
   })
   @ApiParam({ name: 'id', description: 'Vendor UUID' })
-  @ApiBody({ 
-    type: UpdateVendorDto,
-    examples: {
-      updateRating: {
-        summary: 'Update rating only',
-        value: {
-          rating: 4.9
-        }
-      },
-      updateServices: {
-        summary: 'Update services',
-        value: {
-          servicesOffered: ['Legal', 'HR', 'Accounting', 'Tax Planning']
-        }
-      },
-      updateMultiple: {
-        summary: 'Update multiple fields',
-        value: {
-          name: 'Global Expansion Partners LLC',
-          countriesSupported: ['USA', 'Canada', 'UK', 'Australia'],
-          rating: 4.95
-        }
-      }
-    }
-  })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiResponse({
+    status: 200,
     description: 'Vendor updated successfully',
-    type: VendorResponseDto
+    type: VendorResponseDto,
   })
   @ApiResponse({ status: 404, description: 'Vendor not found' })
   @ApiResponse({ status: 403, description: 'Forbidden - Admin only' })
-  update(@Param('id') id: string, @Body() updateVendorDto: UpdateVendorDto): Promise<VendorResponseDto> {
+  update(
+    @Param('id') id: string,
+    @Body() updateVendorDto: UpdateVendorDto,
+  ): Promise<VendorResponseDto> {
     return this.vendorsService.update(id, updateVendorDto);
   }
 
   @Delete(':id')
+  @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN)
   @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Delete vendor',
-    description: 'Delete a vendor (Admin only)'
+    description: 'Delete a vendor (Admin only)',
   })
   @ApiParam({ name: 'id', description: 'Vendor UUID' })
   @ApiResponse({ status: 204, description: 'Vendor deleted successfully' })

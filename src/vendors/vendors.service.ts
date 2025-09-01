@@ -1,3 +1,4 @@
+// src/vendors/vendors.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -22,10 +23,15 @@ export class VendorsService {
   }
 
   async findOne(id: string): Promise<Vendor> {
-    const vendor = await this.vendorsRepository.findOne({ where: { id } });
+    const vendor = await this.vendorsRepository.findOne({
+      where: { id },
+      relations: ['matches'],
+    });
+
     if (!vendor) {
       throw new NotFoundException(`Vendor #${id} not found`);
     }
+
     return vendor;
   }
 
@@ -40,18 +46,20 @@ export class VendorsService {
     await this.vendorsRepository.remove(vendor);
   }
 
-  async findByCountryAndServices(country: string, services: string[]): Promise<Vendor[]> {
-    const query = this.vendorsRepository.createQueryBuilder('vendor');
-    
-    query.where(':country = ANY(vendor.countriesSupported)', { country });
-    
-    if (services.length > 0) {
-      query.andWhere(
-        'EXISTS (SELECT 1 FROM unnest(vendor.servicesOffered) service WHERE service = ANY(:services))',
-        { services }
+  async findByCountryAndServices(
+    country: string,
+    servicesNeeded: string[],
+  ): Promise<Vendor[]> {
+    const vendors = await this.vendorsRepository.find();
+
+    return vendors.filter((vendor) => {
+      const supportsCountry = vendor.countriesSupported.includes(country);
+
+      const hasServiceOverlap = servicesNeeded.some((service) =>
+        vendor.servicesOffered.includes(service),
       );
-    }
-    
-    return query.getMany();
+
+      return supportsCountry && hasServiceOverlap;
+    });
   }
 }

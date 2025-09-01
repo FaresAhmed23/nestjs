@@ -1,17 +1,39 @@
+// src/notifications/notifications.service.ts
 import { Injectable } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 import { Match } from '../matches/entities/match.entity';
 import { Project } from '../projects/entities/project.entity';
 import { Vendor } from '../vendors/entities/vendor.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Client } from '../clients/entities/client.entity';
 
 @Injectable()
 export class NotificationsService {
-  constructor(private mailerService: MailerService) {}
+  constructor(
+    private mailerService: MailerService,
+    @InjectRepository(Client)
+    private clientsRepository: Repository<Client>,
+  ) {}
 
-  async sendNewMatchNotification(match: Match, project: Project, vendor: Vendor): Promise<void> {
+  async sendNewMatchNotification(
+    match: Match,
+    project: Project,
+    vendor: Vendor,
+  ): Promise<void> {
     try {
+      // Get client email
+      const client = await this.clientsRepository.findOne({
+        where: { id: project.clientId },
+      });
+
+      if (!client) {
+        console.error('Client not found for project:', project.id);
+        return;
+      }
+
       await this.mailerService.sendMail({
-        to: project.client.contactEmail,
+        to: client.contactEmail,
         subject: `New vendor match for your project in ${project.country}`,
         html: `
           <h2>New Vendor Match!</h2>
@@ -49,10 +71,15 @@ export class NotificationsService {
     }
   }
 
-  async sendExpiredSLANotification(adminEmail: string, vendors: Vendor[]): Promise<void> {
+  async sendExpiredSLANotification(
+    adminEmail: string,
+    vendors: Vendor[],
+  ): Promise<void> {
     try {
-      const vendorList = vendors.map(v => `<li>${v.name} - ${v.responseSlaHours} hours</li>`).join('');
-      
+      const vendorList = vendors
+        .map((v) => `<li>${v.name} - ${v.responseSlaHours} hours</li>`)
+        .join('');
+
       await this.mailerService.sendMail({
         to: adminEmail,
         subject: 'Vendors with Expired SLAs',
