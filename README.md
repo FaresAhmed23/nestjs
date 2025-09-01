@@ -106,11 +106,9 @@ npm run test:cov
 
 # Run e2e tests
 npm run test:e2e
+```
 
 Thought Process
-expand
-
-The user is asking me to continue the README.md file. Looking at what was provided, it seems incomplete as it ends abruptly after the Local Development section. I should add more sections that would typically be in a complete README, such as:
 
     Installation steps
     Database setup/migrations
@@ -307,4 +305,3 @@ This project is licensed under the UNLICENSED License - see the LICENSE file for
 Support
 
 For support, email support@expanders360.com or open an issue in the GitHub repository.
-```
